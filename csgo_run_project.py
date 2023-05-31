@@ -38,7 +38,9 @@ def analyze_last_bet(last_bet_element):
             if i.isdigit():
                 g += 1
         if g == len(arr_l):
+            g = 0
             break
+        g = 0
     last_x_num = float(l)
     return last_x_num
 
@@ -46,8 +48,10 @@ def make_bet_func():
     try:
         select_item = driver.find_element(By.XPATH, '//*[@id="root"]/div[1]/div[2]/div[1]/div[2]/div/div[2]/div/button')
         select_item.click()
-        input_x = driver.find_element(By.XPATH, '//*[@id="root"]/div[1]/div[2]/div[2]/div[1]/div[2]/div/div[3]/label/input')
-        input_x.send_keys('1.2')
+        input_bet = driver.find_element(By.XPATH, '//*[@id="root"]/div[1]/div[2]/div[2]/div[1]/div[2]/div/div[2]/div/input[2]')
+        input_bet.click()
+        """input_x = driver.find_element(By.XPATH, '//*[@id="root"]/div[1]/div[2]/div[2]/div[1]/div[2]/div/div[3]/label/input')
+        input_x.send_keys('1.2')"""
         make_bet = driver.find_element(By.XPATH, '//*[@id="root"]/div[1]/div[2]/div[2]/div[1]/div[2]/div/div[3]/div/button')
         make_bet.click()
         time.sleep(5)
