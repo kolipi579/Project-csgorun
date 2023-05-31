@@ -30,8 +30,15 @@ def if_crash(x_num):
 def analyze_last_bet(last_bet_element):
     outer_html = last_bet_element.get_attribute('outerHTML')
     last_x = outer_html[:len(outer_html)-5]
+    g = 0
     for i in range(7,3,-1):
         l = last_x[len(last_x)-i:]
+        arr_l = l.split('.')
+        for i in arr_l:
+            if i.isdigit():
+                g += 1
+        if g == len(arr_l):
+            break
     last_x_num = float(l)
     return last_x_num
 
@@ -39,11 +46,8 @@ def make_bet_func():
     try:
         select_item = driver.find_element(By.XPATH, '//*[@id="root"]/div[1]/div[2]/div[1]/div[2]/div/div[2]/div/button')
         select_item.click()
-        input_x = driver.find_element(By.XPATH, '//*[@id="root"]/div[1]/div[2]/div[2]/div[1]/div[2]/div/div[2]/div/input[2]')
-        input_x.click()
-        """input_x.send_keys(Keys.CONTROL + 'a')
-        input_x.clear()
-        input_x.send_keys('1.2')"""
+        input_x = driver.find_element(By.XPATH, '//*[@id="root"]/div[1]/div[2]/div[2]/div[1]/div[2]/div/div[3]/label/input')
+        input_x.send_keys('1.2')
         make_bet = driver.find_element(By.XPATH, '//*[@id="root"]/div[1]/div[2]/div[2]/div[1]/div[2]/div/div[3]/div/button')
         make_bet.click()
         time.sleep(5)
@@ -68,26 +72,31 @@ def buy_item():
         pass
 
 def change_item():
-    select_item = driver.find_element(By.XPATH, '//*[@id="root"]/div[1]/div[2]/div[1]/div[2]/div/div[2]/div/button')
-    select_item.click()
-    exchange = driver.find_element(By.XPATH, '//*[@id="root"]/div[1]/div[2]/div[1]/div[2]/div/div[3]/button[1]')
-    exchange.click()
-    input_cost = driver.find_element(By.XPATH, '//*[@id="exchange-filter-maxPrice-field"]')
-    input_cost.send_keys('0.1')
-    time.sleep(1)
-    button_item = driver.find_element(By.XPATH, '//*[@id="modal-portal"]/div[3]/div[2]/div/div[2]/div[3]/button[1]')
-    button_item.click()
-    time.sleep(1)
-    item_accept = driver.find_element(By.XPATH, '//*[@id="modal-portal"]/div[3]/div[2]/div/div[2]/div[1]/button')
-    item_accept.click()
-    close_buy_screen = driver.find_element(By.XPATH, '//*[@id="modal-portal"]/div[3]/div[2]/div/div[1]/button')
-    close_buy_screen.click()
+    try:
+        select_item = driver.find_element(By.XPATH, '//*[@id="root"]/div[1]/div[2]/div[1]/div[2]/div/div[2]/div/button')
+        select_item.click()
+        exchange = driver.find_element(By.XPATH, '//*[@id="root"]/div[1]/div[2]/div[1]/div[2]/div/div[3]/button[1]')
+        exchange.click()
+        input_cost = driver.find_element(By.XPATH, '//*[@id="exchange-filter-maxPrice-field"]')
+        input_cost.send_keys('0.1')
+        time.sleep(1)
+        button_item = driver.find_element(By.XPATH, '//*[@id="modal-portal"]/div[3]/div[2]/div/div[2]/div[3]/button[1]')
+        button_item.click()
+        time.sleep(1)
+        item_accept = driver.find_element(By.XPATH, '//*[@id="modal-portal"]/div[3]/div[2]/div/div[2]/div[1]/button')
+        item_accept.click()
+        close_buy_screen = driver.find_element(By.XPATH, '//*[@id="modal-portal"]/div[3]/div[2]/div/div[1]/button')
+        close_buy_screen.click()
+    except NoSuchElementException:
+        pass
 
 
 last_x1 = 0
 last_x2 = 0
 if_four_crash = 0
+#TODO if four crashes in the queue not in a row bet
 five_bets = 0
+g = False
 
 while True:
     time.sleep(3)
@@ -101,10 +110,17 @@ while True:
         if analyze_last_bet(last_bet) != last_x1:
             last_x2 = last_x1
             last_x1 = analyze_last_bet(last_bet)
+            if g:
+                if if_crash(analyze_last_bet(last_bet)):
+                    if_four_crash += 1
+                else:
+                    g = False
             if if_crash(analyze_last_bet(last_bet)):
+                g = True
                 if_four_crash += 1
     if five_bets == 5:
         change_item()
+        five_bets = 0
     if if_four_crash >= 3:
         print("bet")
         time.sleep(2)
