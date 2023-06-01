@@ -114,6 +114,8 @@ while True:
         if if_crash(last_bet):
             crash_arr[number_of_x] = 1
             number_of_crash += 1
+        else: 
+            crash_arr[number_of_x] = 0
         if five_bets >= 5:
             time.sleep(4)
             five_bets = 0
