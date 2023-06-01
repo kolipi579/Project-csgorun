@@ -56,23 +56,26 @@ def make_bet_func():
         make_bet.click()
         time.sleep(5)
     except NoSuchElementException:
+        print('make_bet')
         buy_item()
 
 def buy_item():
     try:
         exchange = driver.find_element(By.XPATH, '//*[@id="root"]/div[1]/div[2]/div[1]/div[2]/div/div[3]/button[1]')
         exchange.click()
+        time.sleep(4)
         input_cost = driver.find_element(By.XPATH, '//*[@id="exchange-filter-maxPrice-field"]')
         input_cost.send_keys('0.1')
-        time.sleep(3)
-        button_item = driver.find_element(By.XPATH, '//*[@id="modal-portal"]/div[3]/div[2]/div/div[2]/div[3]/button[1]')
+        time.sleep(4)
+        button_item = driver.find_element(By.XPATH, '//*[@id="modal-portal"]/div[4]/div[2]/div/div[2]/div[3]/button[1]')
         button_item.click()
-        time.sleep(3)
-        item_accept = driver.find_element(By.XPATH, '//*[@id="modal-portal"]/div[3]/div[2]/div/div[2]/div[1]/button')
+        time.sleep(4)
+        item_accept = driver.find_element(By.XPATH, '//*[@id="modal-portal"]/div[4]/div[2]/div/div[2]/div[1]/button')
         item_accept.click()
         close_buy_screen = driver.find_element(By.XPATH, '//*[@id="modal-portal"]/div[3]/div[2]/div/div[1]/button')
         close_buy_screen.click()
     except NoSuchElementException:
+        print("buy_item")
         pass
 
 def change_item():
@@ -81,53 +84,46 @@ def change_item():
         select_item.click()
         exchange = driver.find_element(By.XPATH, '//*[@id="root"]/div[1]/div[2]/div[1]/div[2]/div/div[3]/button[1]')
         exchange.click()
+        time.sleep(4)
         input_cost = driver.find_element(By.XPATH, '//*[@id="exchange-filter-maxPrice-field"]')
         input_cost.send_keys('0.1')
-        time.sleep(2)
-        button_item = driver.find_element(By.XPATH, '//*[@id="modal-portal"]/div[3]/div[2]/div/div[2]/div[3]/button[1]')
+        time.sleep(4)
+        button_item = driver.find_element(By.XPATH, '//*[@id="modal-portal"]/div[4]/div[2]/div/div[2]/div[3]/button[1]')
         button_item.click()
-        time.sleep(2)
-        item_accept = driver.find_element(By.XPATH, '//*[@id="modal-portal"]/div[3]/div[2]/div/div[2]/div[1]/button')
+        time.sleep(4)
+        item_accept = driver.find_element(By.XPATH, '//*[@id="modal-portal"]/div[4]/div[2]/div/div[2]/div[1]/button')
         item_accept.click()
         close_buy_screen = driver.find_element(By.XPATH, '//*[@id="modal-portal"]/div[3]/div[2]/div/div[1]/button')
         close_buy_screen.click()
     except NoSuchElementException:
+        print('change_item')
         pass
 
-
-last_x1 = 0
-last_x2 = 0
-if_four_crash = 0
-#TODO if four crashes in the queue not in a row bet
+last_bet = driver.find_element(By.XPATH, '//*[@id="root"]/div[1]/div[2]/div[2]/div[3]/a[1]')
+crash_arr = [0]*15
+lastx1 = analyze_last_bet(last_bet)
+number_of_crash = 0
+number_of_x = 0
 five_bets = 0
-g = False
 
 while True:
     time.sleep(3)
     last_bet = driver.find_element(By.XPATH, '//*[@id="root"]/div[1]/div[2]/div[2]/div[3]/a[1]')
-    if last_x1 == 0:
-        last_x1 = analyze_last_bet(last_bet)
-    elif last_x2 == 0:
-        last_x2 = last_x1
-        last_x1 = analyze_last_bet(last_bet)
-    else:
-        if analyze_last_bet(last_bet) != last_x1:
-            last_x2 = last_x1
-            last_x1 = analyze_last_bet(last_bet)
-            if g:
-                if if_crash(analyze_last_bet(last_bet)):
-                    if_four_crash += 1
-                else:
-                    g = False
-            if if_crash(analyze_last_bet(last_bet)):
-                g = True
-                if_four_crash += 1
-    if five_bets == 5:
-        change_item()
-        five_bets = 0
-    if if_four_crash >= 1:
-        print("bet")
-        time.sleep(5)
-        if_four_crash = 0
-        five_bets += 1
-        make_bet_func()
+    if analyze_last_bet(last_bet) != lastx1:
+        lastx1 = analyze_last_bet(last_bet)
+        if if_crash(last_bet):
+            crash_arr[number_of_x] = 1
+            number_of_crash += 1
+        if five_bets >= 5:
+            time.sleep(4)
+            five_bets = 0
+            change_item()
+        if sum(crash_arr) >= 4:
+            time.sleep(4)
+            five_bets += 1
+            make_bet_func()
+        number_of_x += 1
+        if number_of_x == 15:
+            number_of_x = 0
+            number_of_crash = 0
+    
