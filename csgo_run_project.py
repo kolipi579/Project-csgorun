@@ -64,10 +64,10 @@ def buy_item():
         exchange.click()
         input_cost = driver.find_element(By.XPATH, '//*[@id="exchange-filter-maxPrice-field"]')
         input_cost.send_keys('0.1')
-        time.sleep(1)
+        time.sleep(3)
         button_item = driver.find_element(By.XPATH, '//*[@id="modal-portal"]/div[3]/div[2]/div/div[2]/div[3]/button[1]')
         button_item.click()
-        time.sleep(1)
+        time.sleep(3)
         item_accept = driver.find_element(By.XPATH, '//*[@id="modal-portal"]/div[3]/div[2]/div/div[2]/div[1]/button')
         item_accept.click()
         close_buy_screen = driver.find_element(By.XPATH, '//*[@id="modal-portal"]/div[3]/div[2]/div/div[1]/button')
@@ -83,10 +83,10 @@ def change_item():
         exchange.click()
         input_cost = driver.find_element(By.XPATH, '//*[@id="exchange-filter-maxPrice-field"]')
         input_cost.send_keys('0.1')
-        time.sleep(1)
+        time.sleep(2)
         button_item = driver.find_element(By.XPATH, '//*[@id="modal-portal"]/div[3]/div[2]/div/div[2]/div[3]/button[1]')
         button_item.click()
-        time.sleep(1)
+        time.sleep(2)
         item_accept = driver.find_element(By.XPATH, '//*[@id="modal-portal"]/div[3]/div[2]/div/div[2]/div[1]/button')
         item_accept.click()
         close_buy_screen = driver.find_element(By.XPATH, '//*[@id="modal-portal"]/div[3]/div[2]/div/div[1]/button')
@@ -125,9 +125,9 @@ while True:
     if five_bets == 5:
         change_item()
         five_bets = 0
-    if if_four_crash >= 3:
+    if if_four_crash >= 1:
         print("bet")
-        time.sleep(2)
+        time.sleep(5)
         if_four_crash = 0
         five_bets += 1
         make_bet_func()
